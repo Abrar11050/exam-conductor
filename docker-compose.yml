@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7.0.0
+    restart: unless-stopped
+    ports:
+      - $MONGODB_LOCAL_PORT:$MONGODB_DOCKER_PORT
+    volumes:
+      - db:/data/db
+    networks:
+      - backend
+  
+  exco-backend:
+    depends_on:
+      - mongodb
+    build: ./exco-backend
+    restart: unless-stopped
+    env_file: ./.env
+    ports:
+      - $NODE_LOCAL_PORT:$NODE_DOCKER_PORT
+    environment:
+      - DB_URL=mongodb://mongodb:${MONGODB_DOCKER_PORT}/
+      - DB_NAME=$DB_NAME
+      - JWT_SECRET=$JWT_SECRET
+      - PORT=$NODE_DOCKER_PORT
+      - COMBINED=FALSE
+    networks:
+      - backend
+      - frontend
+  
+  exco-frontend:
+    depends_on:
+      - exco-backend
+    
+    build:
+      context: ./exco-frontend
+      args:
+        - REACT_APP_BASE_API_URL=$REACT_APP_BASE_API_URL
+    ports:
+      - $REACT_LOCAL_PORT:$REACT_DOCKER_PORT
+    networks:
+      - frontend
+
+volumes:
+  db:
+
+networks:
+  backend:
+  frontend:

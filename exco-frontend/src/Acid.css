@@ -1,0 +1,19 @@
+.contentjam {
+    margin-left: 16px;
+    margin-right: 16px;
+    margin-top: 16px;
+    margin-bottom: 16px;
+}
+
+.full-check-2nd-child > span:nth-child(2) {
+    width: 100%;
+}
+
+.spaced-vert {
+    margin: 20px 0;
+}
+
+@font-face {
+    font-family: tesla;
+    src: url(TESLA.ttf);
+}
